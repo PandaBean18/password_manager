@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../generator.dart';
 import 'dart:io';
 
 void main() {
@@ -103,36 +104,39 @@ class _BaseAppState extends State<BaseApp> {
                   duration: Duration(milliseconds: 200),
                   child: ListView(
                     children: <Widget>[
-                      MouseRegion(
-                          onEnter: _changeColorFirst,
-                          onExit: _changeColorFirst,
-                          child: Align(
-                              alignment: Alignment.topCenter,
-                              child: AnimatedContainer(
-                                  margin: EdgeInsets.all(10),
-                                  width: width - 25,
-                                  height: 50,
-                                  duration: Duration(milliseconds: 200),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: sidebarWidgetColorFirst,
-                                  ),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: _getChild(
-                                          Icon(
-                                            Icons.home,
-                                            color: sidebarIconColorFirst,
-                                          ),
-                                          Text(
-                                            "Home",
-                                            overflow: TextOverflow.fade,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: sidebarIconColorFirst),
-                                          )))))),
+                      InkWell(
+                          onTap: () => {},
+                          child: MouseRegion(
+                              onEnter: _changeColorFirst,
+                              onExit: _changeColorFirst,
+                              child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: AnimatedContainer(
+                                      margin: EdgeInsets.all(10),
+                                      width: width - 25,
+                                      height: 50,
+                                      duration: Duration(milliseconds: 200),
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: sidebarWidgetColorFirst,
+                                      ),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: _getChild(
+                                              Icon(
+                                                Icons.home,
+                                                color: sidebarIconColorFirst,
+                                              ),
+                                              Text(
+                                                "Home",
+                                                overflow: TextOverflow.fade,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color:
+                                                        sidebarIconColorFirst),
+                                              ))))))),
                       Align(
                         alignment: Alignment.topCenter,
                         child: AnimatedContainer(
@@ -142,33 +146,40 @@ class _BaseAppState extends State<BaseApp> {
                           width: width - 10,
                         ),
                       ),
-                      MouseRegion(
-                          onEnter: _changeColorSecond,
-                          onExit: _changeColorSecond,
-                          child: Align(
-                              alignment: Alignment.topCenter,
-                              child: AnimatedContainer(
-                                  margin: EdgeInsets.all(10),
-                                  width: width - 25,
-                                  height: 50,
-                                  duration: Duration(milliseconds: 200),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: sidebarWidgetColorSec,
-                                  ),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: _getChild(
-                                          Icon(Icons.lightbulb_outline,
-                                              color: sidebarIconColorSec),
-                                          Text("Generate Password",
-                                              overflow: TextOverflow.fade,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color:
-                                                      sidebarIconColorSec)))))))
+                      InkWell(
+                          onTap: () => {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) => Generator())))
+                              },
+                          child: MouseRegion(
+                              onEnter: _changeColorSecond,
+                              onExit: _changeColorSecond,
+                              child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: AnimatedContainer(
+                                      margin: EdgeInsets.all(10),
+                                      width: width - 25,
+                                      height: 50,
+                                      duration: Duration(milliseconds: 200),
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: sidebarWidgetColorSec,
+                                      ),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: _getChild(
+                                              Icon(Icons.lightbulb_outline,
+                                                  color: sidebarIconColorSec),
+                                              Text("Generate Password",
+                                                  overflow: TextOverflow.fade,
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color:
+                                                          sidebarIconColorSec))))))))
                     ],
                   ),
                 )))
