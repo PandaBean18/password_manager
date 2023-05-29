@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
-import '../main.dart';
+import '../home.dart';
 
 class Generator extends StatefulWidget {
   const Generator({super.key});
