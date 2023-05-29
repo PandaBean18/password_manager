@@ -195,7 +195,7 @@ class _PasswordInputState extends State<PasswordInput> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: ((context) => BaseApp())));
+                                  builder: ((context) => SecurityQuestion())));
                         },
                         child: Container(
                             padding: EdgeInsets.all(10),
@@ -211,6 +211,142 @@ class _PasswordInputState extends State<PasswordInput> {
                                 Icons.navigate_next,
                                 color: Color.fromARGB(255, 79, 85, 88),
                                 size: 35,
+                              )
+                            ])))
+                  ],
+                )
+              ]),
+        ),
+      ),
+    );
+  }
+}
+
+class SecurityQuestion extends StatefulWidget {
+  const SecurityQuestion({super.key});
+
+  @override
+  State<SecurityQuestion> createState() => _SecurityQuestionState();
+}
+
+class _SecurityQuestionState extends State<SecurityQuestion> {
+  bool obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 251, 243, 226),
+      body: Center(
+        child: Container(
+          height: 500,
+          width: 600,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              color: Color.fromARGB(255, 251, 243, 226),
+              border: Border.all(color: Color.fromARGB(100, 72, 51, 43)),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Please enter your security question',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 79, 85, 88),
+                            fontSize: 35,
+                          ),
+                        )),
+                    Container(
+                      height: 10,
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                          'This question will be used incase you forget your password. It is very important to remember this as without this you will be unable to access your data',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 79, 85, 88),
+                            fontSize: 20,
+                          )),
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          hintText: 'Question'),
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Please enter your answer',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 79, 85, 88),
+                            fontSize: 35,
+                          ),
+                        )),
+                    Container(
+                      height: 20,
+                    ),
+                    Container(
+                        child: Row(children: [
+                      Flexible(
+                          child: TextField(
+                        obscureText: obscureText,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            hintText: 'Answer'),
+                      )),
+                      Container(
+                          margin: EdgeInsets.all(10),
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                obscureText
+                                    ? (obscureText = false)
+                                    : (obscureText = true);
+                              });
+                            },
+                            child: Icon(Icons.remove_red_eye),
+                          ))
+                    ]))
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => BaseApp())));
+                        },
+                        child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Row(children: [
+                              Text(
+                                'Next',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 79, 85, 88),
+                                  fontSize: 25,
+                                ),
+                              ),
+                              Icon(
+                                Icons.navigate_next,
+                                color: Color.fromARGB(255, 79, 85, 88),
+                                size: 45,
                               )
                             ])))
                   ],
