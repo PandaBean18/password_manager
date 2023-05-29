@@ -444,7 +444,7 @@ class _GeneratorState extends State<Generator> {
                         ),
                         Container(
                           width: 175,
-                          height: 39,
+                          height: 38,
                           margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
