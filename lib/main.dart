@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../home.dart';
 import 'package:postgres/postgres.dart';
 import 'dart:convert';
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
@@ -14,9 +15,8 @@ class MyApp extends StatelessWidget {
   StatefulWidget home = SignUp();
   void getHome() async {
     final String jsonString =
-        await rootBundle.loadString('databse_params.json');
+        await File('./database_params.json').readAsString();
     final params = json.decode(jsonString);
-    print(params);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],
         username: params['username'], password: params['password']);
