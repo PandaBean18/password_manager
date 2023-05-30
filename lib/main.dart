@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../home.dart';
+import 'package:postgres/postgres.dart';
+import 'dart:convert';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  StatefulWidget home = SignUp();
+  void getHome() async {
+    final String jsonString =
+        await rootBundle.loadString('databse_params.json');
+    final params = json.decode(jsonString);
+    print(params);
+    var connection = PostgreSQLConnection(
+        params['host'], params['port'], params['databaseName'],
+        username: params['username'], password: params['password']);
+    connection.open();
+    try {
+      await connection.query('SELECT * FROM USER');
+    } catch (e) {
+      home = SignUp();
+    }
+    home = SignUp();
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    getHome();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Fragment'),
-      home: SignUp(),
+      home: home,
     );
   }
 }
