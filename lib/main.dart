@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         username: params['username'], password: params['password']);
     connection.open();
     try {
-      await connection.query('SELECT * FROM USER');
+      await connection.query('SELECT * FROM users');
     } catch (e) {
       home = SignUp();
     }
@@ -49,6 +49,21 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  late TextEditingController usernameController;
+
+  @override
+  void initState() {
+    super.initState();
+    usernameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    super.dispose();
+  }
+
+  String username = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,6 +105,10 @@ class _SignUpState extends State<SignUp> {
                       height: 20,
                     ),
                     TextField(
+                      controller: usernameController,
+                      onChanged: (String value) {
+                        username = value;
+                      },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -106,7 +125,8 @@ class _SignUpState extends State<SignUp> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: ((context) => PasswordInput())));
+                                  builder: ((context) =>
+                                      PasswordInput(username: username))));
                         },
                         child: Container(
                             padding: EdgeInsets.all(10),
@@ -134,14 +154,29 @@ class _SignUpState extends State<SignUp> {
 }
 
 class PasswordInput extends StatefulWidget {
-  const PasswordInput({super.key});
+  final String username;
+  const PasswordInput({Key? key, required this.username}) : super(key: key);
 
   @override
   State<PasswordInput> createState() => _PasswordInputState();
 }
 
 class _PasswordInputState extends State<PasswordInput> {
+  late TextEditingController passwordController;
   bool obscureText = true;
+  String password = '';
+
+  @override
+  void initState() {
+    super.initState();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +198,7 @@ class _PasswordInputState extends State<PasswordInput> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Please enter your password',
+                      'Hi ${this.widget.username}, please enter your password',
                       style: TextStyle(
                         color: Color.fromARGB(255, 79, 85, 88),
                         fontSize: 35,
@@ -187,6 +222,10 @@ class _PasswordInputState extends State<PasswordInput> {
                         child: Row(children: [
                           Flexible(
                               child: TextField(
+                            controller: passwordController,
+                            onChanged: (value) {
+                              password = value;
+                            },
                             obscureText: obscureText,
                             decoration: InputDecoration(
                                 border: OutlineInputBorder(
@@ -217,142 +256,6 @@ class _PasswordInputState extends State<PasswordInput> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: ((context) => SecurityQuestion())));
-                        },
-                        child: Container(
-                            padding: EdgeInsets.all(10),
-                            child: Row(children: [
-                              Text(
-                                'Next',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 79, 85, 88),
-                                  fontSize: 25,
-                                ),
-                              ),
-                              Icon(
-                                Icons.navigate_next,
-                                color: Color.fromARGB(255, 79, 85, 88),
-                                size: 35,
-                              )
-                            ])))
-                  ],
-                )
-              ]),
-        ),
-      ),
-    );
-  }
-}
-
-class SecurityQuestion extends StatefulWidget {
-  const SecurityQuestion({super.key});
-
-  @override
-  State<SecurityQuestion> createState() => _SecurityQuestionState();
-}
-
-class _SecurityQuestionState extends State<SecurityQuestion> {
-  bool obscureText = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 251, 243, 226),
-      body: Center(
-        child: Container(
-          height: 500,
-          width: 600,
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              color: Color.fromARGB(255, 251, 243, 226),
-              border: Border.all(color: Color.fromARGB(100, 72, 51, 43)),
-              borderRadius: BorderRadius.circular(10)),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Please enter your security question',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 79, 85, 88),
-                            fontSize: 35,
-                          ),
-                        )),
-                    Container(
-                      height: 10,
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                          'This question will be used incase you forget your password. It is very important to remember this as without this you will be unable to access your data',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 79, 85, 88),
-                            fontSize: 20,
-                          )),
-                    ),
-                    Container(
-                      height: 20,
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          hintText: 'Question'),
-                    ),
-                    Container(
-                      height: 20,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Please enter your answer',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 79, 85, 88),
-                            fontSize: 35,
-                          ),
-                        )),
-                    Container(
-                      height: 20,
-                    ),
-                    Container(
-                        child: Row(children: [
-                      Flexible(
-                          child: TextField(
-                        obscureText: obscureText,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            hintText: 'Answer'),
-                      )),
-                      Container(
-                          margin: EdgeInsets.all(10),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                obscureText
-                                    ? (obscureText = false)
-                                    : (obscureText = true);
-                              });
-                            },
-                            child: Icon(Icons.remove_red_eye),
-                          ))
-                    ]))
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
                                   builder: ((context) => BaseApp())));
                         },
                         child: Container(
@@ -368,7 +271,7 @@ class _SecurityQuestionState extends State<SecurityQuestion> {
                               Icon(
                                 Icons.navigate_next,
                                 color: Color.fromARGB(255, 79, 85, 88),
-                                size: 45,
+                                size: 35,
                               )
                             ])))
                   ],
