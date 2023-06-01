@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../home.dart';
 import 'package:postgres/postgres.dart';
+import 'package:bcrypt/bcrypt.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -252,7 +253,23 @@ class _PasswordInputState extends State<PasswordInput> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     InkWell(
-                        onTap: () {
+                        onTap: () async {
+                          final String jsonString =
+                              await File('./database_params.json')
+                                  .readAsString();
+                          final params = json.decode(jsonString);
+                          var connection = PostgreSQLConnection(params['host'],
+                              params['port'], params['databaseName'],
+                              username: params['username'],
+                              password: params['password']);
+                          await connection.open();
+                          password = BCrypt.hashpw(password, BCrypt.gensalt());
+                          await connection.query(
+                              'INSERT INTO USERS (username, password_digest) VALUES (@username, @password)',
+                              substitutionValues: {
+                                "username": widget.username,
+                                "password": password
+                              });
                           Navigator.push(
                               context,
                               MaterialPageRoute(
