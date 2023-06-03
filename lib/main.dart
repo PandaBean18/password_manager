@@ -11,10 +11,9 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   Future<StatefulWidget> getHome() async {
-    print('lol');
     final String jsonString =
         await File('./database_params.json').readAsString();
     final params = json.decode(jsonString);
@@ -23,15 +22,20 @@ class MyApp extends StatelessWidget {
         username: params['username'], password: params['password']);
     await connection.open();
     try {
-      await connection.query('SELECT * FROM users');
+      PostgreSQLResult results = await connection.query('SELECT * FROM USERS');
+      await connection.close();
+      if (results.length == 0) {
+        return SignUp();
+      } else {
+        return SignIn();
+      }
     } catch (e) {
       print(e);
+      await connection.close();
       return SignUp();
     }
-    return SignIn();
   }
 
-  // StatefulWidget home = SignIn();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -56,11 +60,6 @@ class MyApp extends StatelessWidget {
         );
       },
     );
-    // return MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   theme: ThemeData(fontFamily: 'Fragment'),
-    //   home: home,
-    // );
   }
 }
 
@@ -268,7 +267,7 @@ class _PasswordInputState extends State<PasswordInput> {
                                 },
                                 child: Icon(Icons.remove_red_eye),
                               ))
-                        ]))
+                        ])),
                   ],
                 ),
                 Row(
@@ -292,6 +291,7 @@ class _PasswordInputState extends State<PasswordInput> {
                                 "username": widget.username,
                                 "password": password
                               });
+                          await connection.close();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -333,6 +333,9 @@ class _SignInState extends State<SignIn> {
   late TextEditingController passwordController;
   bool obscureText = true;
   String password = '';
+  String hashed = '';
+  String username = '';
+  String error = '';
 
   @override
   void initState() {
@@ -346,98 +349,147 @@ class _SignInState extends State<SignIn> {
     super.dispose();
   }
 
+  Future<PostgreSQLResult> getCreds() async {
+    final String jsonString =
+        await File('./database_params.json').readAsString();
+    final params = json.decode(jsonString);
+    var connection = PostgreSQLConnection(
+        params['host'], params['port'], params['databaseName'],
+        username: params['username'], password: params['password']);
+    await connection.open();
+
+    PostgreSQLResult result = await connection.query('SELECT * FROM USERS');
+    await connection.close();
+    return result;
+  }
+
+  Future<bool> chechPW(String password) async {
+    return BCrypt.checkpw(password, hashed);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 251, 243, 226),
-      body: Center(
-        child: Container(
-          height: 370,
-          width: 300,
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              color: Color.fromARGB(255, 251, 243, 226),
-              border: Border.all(color: Color.fromARGB(100, 72, 51, 43)),
-              borderRadius: BorderRadius.circular(10)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
+    return FutureBuilder(
+      future: getCreds(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          PostgreSQLResult result = snapshot.data as PostgreSQLResult;
+          hashed = result[0][1];
+          username = result[0][0];
+        } else {
+          return Center(
+              child: SizedBox(
+            width: 60,
+            height: 60,
+            child: CircularProgressIndicator(),
+          ));
+        }
+
+        return Scaffold(
+          backgroundColor: Color.fromARGB(255, 251, 243, 226),
+          body: Center(
+            child: Container(
+              height: 370,
+              width: 300,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 251, 243, 226),
+                  border: Border.all(color: Color.fromARGB(100, 72, 51, 43)),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Welcome,\nPlease enter your password.',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 79, 85, 88),
-                      fontSize: 35,
-                    ),
-                  ),
-                  Container(
-                    height: 20,
-                  ),
-                  Container(
-                      width: 280,
-                      child: Row(children: [
-                        Flexible(
-                            child: TextField(
-                          controller: passwordController,
-                          onChanged: (value) {
-                            password = value;
-                          },
-                          obscureText: obscureText,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              hintText: 'Password'),
-                        )),
-                        Container(
-                            margin: EdgeInsets.all(10),
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  obscureText
-                                      ? (obscureText = false)
-                                      : (obscureText = true);
-                                });
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Welcome $username,\nPlease enter your password.',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 79, 85, 88),
+                          fontSize: 35,
+                        ),
+                      ),
+                      Container(
+                        height: 20,
+                      ),
+                      Container(
+                          width: 280,
+                          child: Row(children: [
+                            Flexible(
+                                child: TextField(
+                              controller: passwordController,
+                              onChanged: (value) {
+                                password = value;
                               },
-                              child: Icon(Icons.remove_red_eye),
-                            ))
-                      ]))
+                              obscureText: obscureText,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  hintText: 'Password'),
+                            )),
+                            Container(
+                                margin: EdgeInsets.all(10),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      obscureText
+                                          ? (obscureText = false)
+                                          : (obscureText = true);
+                                    });
+                                  },
+                                  child: Icon(Icons.remove_red_eye),
+                                ))
+                          ])),
+                      (error == '')
+                          ? Text('')
+                          : Text(error,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 195, 45, 70),
+                                fontSize: 20,
+                              )),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                          onTap: () async {
+                            if (await chechPW(password) as bool) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) => BaseApp())));
+                            } else {
+                              setState(() {
+                                error = 'Incorrect password';
+                              });
+                            }
+                          },
+                          child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Row(children: [
+                                Text(
+                                  'Next',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 79, 85, 88),
+                                    fontSize: 25,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: Color.fromARGB(255, 79, 85, 88),
+                                  size: 45,
+                                )
+                              ])))
+                    ],
+                  )
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => BaseApp())));
-                      },
-                      child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Row(children: [
-                            Text(
-                              'Next',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 79, 85, 88),
-                                fontSize: 25,
-                              ),
-                            ),
-                            Icon(
-                              Icons.navigate_next,
-                              color: Color.fromARGB(255, 79, 85, 88),
-                              size: 45,
-                            )
-                          ])))
-                ],
-              )
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
