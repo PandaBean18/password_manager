@@ -13,32 +13,54 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  StatefulWidget home = SignUp();
-  void getHome() async {
+  Future<StatefulWidget> getHome() async {
+    print('lol');
     final String jsonString =
         await File('./database_params.json').readAsString();
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],
         username: params['username'], password: params['password']);
-    connection.open();
+    await connection.open();
     try {
       await connection.query('SELECT * FROM users');
     } catch (e) {
-      home = SignUp();
+      print(e);
+      return SignUp();
     }
-    home = SignUp();
+    return SignIn();
   }
 
+  // StatefulWidget home = SignIn();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    getHome();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Fragment'),
-      home: home,
+    return FutureBuilder(
+      future: getHome(),
+      builder: (BuildContext context, AsyncSnapshot<StatefulWidget> snapshot) {
+        StatefulWidget home = SignUp();
+        if (snapshot.data == null) {
+          return Center(
+              child: SizedBox(
+            width: 60,
+            height: 60,
+            child: CircularProgressIndicator(),
+          ));
+        } else {
+          home = snapshot.data as StatefulWidget;
+        }
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(fontFamily: 'Fragment'),
+          home: home,
+        );
+      },
     );
+    // return MaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   theme: ThemeData(fontFamily: 'Fragment'),
+    //   home: home,
+    // );
   }
 }
 
@@ -294,6 +316,126 @@ class _PasswordInputState extends State<PasswordInput> {
                   ],
                 )
               ]),
+        ),
+      ),
+    );
+  }
+}
+
+class SignIn extends StatefulWidget {
+  const SignIn({super.key});
+
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  late TextEditingController passwordController;
+  bool obscureText = true;
+  String password = '';
+
+  @override
+  void initState() {
+    super.initState();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 251, 243, 226),
+      body: Center(
+        child: Container(
+          height: 370,
+          width: 300,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              color: Color.fromARGB(255, 251, 243, 226),
+              border: Border.all(color: Color.fromARGB(100, 72, 51, 43)),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Welcome,\nPlease enter your password.',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 79, 85, 88),
+                      fontSize: 35,
+                    ),
+                  ),
+                  Container(
+                    height: 20,
+                  ),
+                  Container(
+                      width: 280,
+                      child: Row(children: [
+                        Flexible(
+                            child: TextField(
+                          controller: passwordController,
+                          onChanged: (value) {
+                            password = value;
+                          },
+                          obscureText: obscureText,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              hintText: 'Password'),
+                        )),
+                        Container(
+                            margin: EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  obscureText
+                                      ? (obscureText = false)
+                                      : (obscureText = true);
+                                });
+                              },
+                              child: Icon(Icons.remove_red_eye),
+                            ))
+                      ]))
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => BaseApp())));
+                      },
+                      child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Row(children: [
+                            Text(
+                              'Next',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 79, 85, 88),
+                                fontSize: 25,
+                              ),
+                            ),
+                            Icon(
+                              Icons.navigate_next,
+                              color: Color.fromARGB(255, 79, 85, 88),
+                              size: 45,
+                            )
+                          ])))
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
