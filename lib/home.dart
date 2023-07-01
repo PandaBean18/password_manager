@@ -51,7 +51,7 @@ class _BaseAppState extends State<BaseApp> {
   double y = 0.0;
 
   // Containers for password
-  int current = 0;
+  int current = 10;
   Color containerColor = Color.fromARGB(255, 252, 252, 220);
   Color containerDelColor = Color.fromARGB(255, 252, 252, 220);
   Color containerEditColor = Color.fromARGB(255, 252, 252, 220);
@@ -81,6 +81,8 @@ class _BaseAppState extends State<BaseApp> {
   // data
   List<dynamic> data = [];
   bool dataExtracted = false;
+  List<dynamic> searchResults = [];
+  List<dynamic> currrentDataList = [];
 
   void _changeElevation() {
     (elevation == 0) ? (elevation = 10) : (elevation = 0);
@@ -188,14 +190,26 @@ class _BaseAppState extends State<BaseApp> {
 
         data.add([applicationName, applicationPass]);
       }
-
+      currrentDataList = data;
       dataExtracted = true;
     }
 
     return true;
   }
 
-  List<Widget> _getChildren() {
+  void getSearchResults(String keyword) {
+    keyword = keyword.toLowerCase();
+    List<dynamic> currentSearchResults = [];
+    for (int i = 0; i < data.length; i++) {
+      List<String> current = data[i];
+      if (current[0].toLowerCase().contains(keyword)) {
+        currentSearchResults.add(current);
+      }
+    }
+    searchResults = currentSearchResults;
+  }
+
+  List<Widget> _getChildren(data) {
     int i = 0;
     List<Widget> children = [];
     while (i < data.length) {
@@ -594,50 +608,56 @@ class _BaseAppState extends State<BaseApp> {
                                     Expanded(
                                       child: Container(
                                         child: TextField(
+                                          onChanged: (value) {
+                                            setState(() {
+                                              getSearchResults(value);
+                                              currrentDataList = searchResults;
+                                            });
+                                          },
                                           decoration: InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Search'),
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                        child: Material(
-                                          elevation: elevation,
-                                          child: MouseRegion(
-                                            onEnter: (event) {
-                                              setState(() {
-                                                _changeElevation();
-                                              });
-                                            },
-                                            onExit: (event) {
-                                              setState(() {
-                                                _changeElevation();
-                                              });
-                                            },
-                                            child: InkWell(
-                                              onTap: () {},
-                                              child: Container(
-                                                  height: 45,
-                                                  width: 125,
-                                                  decoration: BoxDecoration(
-                                                      color: beige,
-                                                      border: Border.all(),
-                                                      boxShadow: const [
-                                                        BoxShadow(
-                                                            offset:
-                                                                Offset(5, 5))
-                                                      ]),
-                                                  alignment: Alignment.center,
-                                                  child: const Text('Search',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight: FontWeight
-                                                              .bold))),
-                                            ),
-                                          ),
-                                        ))
+                                    // Container(
+                                    //     margin:
+                                    //         EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                    //     child: Material(
+                                    //       elevation: elevation,
+                                    //       child: MouseRegion(
+                                    //         onEnter: (event) {
+                                    //           setState(() {
+                                    //             _changeElevation();
+                                    //           });
+                                    //         },
+                                    //         onExit: (event) {
+                                    //           setState(() {
+                                    //             _changeElevation();
+                                    //           });
+                                    //         },
+                                    //         child: InkWell(
+                                    //           onTap: () {},
+                                    //           child: Container(
+                                    //               height: 45,
+                                    //               width: 125,
+                                    //               decoration: BoxDecoration(
+                                    //                   color: beige,
+                                    //                   border: Border.all(),
+                                    //                   boxShadow: const [
+                                    //                     BoxShadow(
+                                    //                         offset:
+                                    //                             Offset(5, 5))
+                                    //                   ]),
+                                    //               alignment: Alignment.center,
+                                    //               child: const Text('Search',
+                                    //                   style: TextStyle(
+                                    //                       color: Colors.black,
+                                    //                       fontWeight: FontWeight
+                                    //                           .bold))),
+                                    //         ),
+                                    //       ),
+                                    //     ))
                                   ],
                                 ),
                               ),
@@ -694,7 +714,8 @@ class _BaseAppState extends State<BaseApp> {
                                       },
                                       child: Container(
                                           child: ListView(
-                                              children: _getChildren()))))
+                                              children: _getChildren(
+                                                  currrentDataList)))))
                             ],
                           ),
                         ),
