@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../edit_pass.dart';
 import 'package:postgres/postgres.dart';
 import '../generator.dart';
 import '../save_credentials.dart';
@@ -357,7 +358,13 @@ class _BaseAppState extends State<BaseApp> {
                       });
                     },
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => EditPass(
+                                      data[current][0], data[current][1]))));
+                        },
                         child: Listener(
                             onPointerDown: (event) {
                               setState(() {
@@ -620,44 +627,6 @@ class _BaseAppState extends State<BaseApp> {
                                         ),
                                       ),
                                     ),
-                                    // Container(
-                                    //     margin:
-                                    //         EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                    //     child: Material(
-                                    //       elevation: elevation,
-                                    //       child: MouseRegion(
-                                    //         onEnter: (event) {
-                                    //           setState(() {
-                                    //             _changeElevation();
-                                    //           });
-                                    //         },
-                                    //         onExit: (event) {
-                                    //           setState(() {
-                                    //             _changeElevation();
-                                    //           });
-                                    //         },
-                                    //         child: InkWell(
-                                    //           onTap: () {},
-                                    //           child: Container(
-                                    //               height: 45,
-                                    //               width: 125,
-                                    //               decoration: BoxDecoration(
-                                    //                   color: beige,
-                                    //                   border: Border.all(),
-                                    //                   boxShadow: const [
-                                    //                     BoxShadow(
-                                    //                         offset:
-                                    //                             Offset(5, 5))
-                                    //                   ]),
-                                    //               alignment: Alignment.center,
-                                    //               child: const Text('Search',
-                                    //                   style: TextStyle(
-                                    //                       color: Colors.black,
-                                    //                       fontWeight: FontWeight
-                                    //                           .bold))),
-                                    //         ),
-                                    //       ),
-                                    //     ))
                                   ],
                                 ),
                               ),
