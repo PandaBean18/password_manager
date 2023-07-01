@@ -59,8 +59,8 @@ class _EditPassState extends State<EditPass> {
   double nextContainerRightMargin = 10;
 
   Future<bool> checkPassword(String pass) async {
-    final String jsonString =
-        await File('./database_params.json').readAsString();
+    final String jsonString = await DefaultAssetBundle.of(context)
+        .loadString("assets/database_params.json");
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],
@@ -82,8 +82,8 @@ class _EditPassState extends State<EditPass> {
   }
 
   Future<bool> insertData(String key) async {
-    final String jsonString =
-        await File('./database_params.json').readAsString();
+    final String jsonString = await DefaultAssetBundle.of(context)
+        .loadString("assets/database_params.json");
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],
@@ -217,7 +217,7 @@ class _EditPassState extends State<EditPass> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Add Password',
+                    'Edit Password',
                     style: TextStyle(color: Colors.black, fontSize: 50),
                   ),
                   Container(

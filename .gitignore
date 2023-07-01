@@ -44,4 +44,4 @@ app.*.map.json
 /android/app/release
 
 # own 
-/database_params.json 
+/assets/database_params.json 

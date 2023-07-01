@@ -6,7 +6,8 @@ import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 void main() async {
-  final String jsonString = await File('./database_params.json').readAsString();
+  final String jsonString =
+      await File('./assets/database_params.json').readAsString();
   final params = json.decode(jsonString);
   final host = params['host'];
   final port = params['port'];

@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 
   Future<StatefulWidget> getHome() async {
     final String jsonString =
-        await File('./database_params.json').readAsString();
+        await rootBundle.loadString('assets/database_params.json');
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],
@@ -280,8 +280,9 @@ class _PasswordInputState extends State<PasswordInput> {
                     InkWell(
                         onTap: () async {
                           final String jsonString =
-                              await File('./database_params.json')
-                                  .readAsString();
+                              await DefaultAssetBundle.of(context)
+                                  .loadString("assets/database_params.json");
+                          ;
                           final params = json.decode(jsonString);
                           var connection = PostgreSQLConnection(params['host'],
                               params['port'], params['databaseName'],
@@ -362,8 +363,9 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<PostgreSQLResult> getCreds() async {
-    final String jsonString =
-        await File('./database_params.json').readAsString();
+    final String jsonString = await DefaultAssetBundle.of(context)
+        .loadString("assets/database_params.json");
+    ;
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],

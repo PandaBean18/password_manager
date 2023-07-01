@@ -52,8 +52,8 @@ class _AddPassState extends State<AddPass> {
   double nextContainerRightMargin = 10;
 
   Future<bool> checkPassword(String pass) async {
-    final String jsonString =
-        await File('./database_params.json').readAsString();
+    final String jsonString = await DefaultAssetBundle.of(context)
+        .loadString("assets/database_params.json");
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],
@@ -63,9 +63,6 @@ class _AddPassState extends State<AddPass> {
     PostgreSQLResult result = await connection.query("SELECT * FROM USERS");
     await connection.close();
     String hashed = result[0][1];
-    print(password);
-    print(hashed);
-    print(BCrypt.checkpw(password, hashed));
     return BCrypt.checkpw(password, hashed);
   }
 
@@ -78,8 +75,8 @@ class _AddPassState extends State<AddPass> {
   }
 
   Future<bool> insertData(String key) async {
-    final String jsonString =
-        await File('./database_params.json').readAsString();
+    final String jsonString = await DefaultAssetBundle.of(context)
+        .loadString("assets/database_params.json");
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],

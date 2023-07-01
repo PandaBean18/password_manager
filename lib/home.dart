@@ -115,8 +115,8 @@ class _BaseAppState extends State<BaseApp> {
   }
 
   Future<void> showDeleteDialog(String applicationName) async {
-    final String jsonString =
-        await File('./database_params.json').readAsString();
+    final String jsonString = await DefaultAssetBundle.of(context)
+        .loadString("assets/database_params.json");
     final params = json.decode(jsonString);
     var connection = PostgreSQLConnection(
         params['host'], params['port'], params['databaseName'],
@@ -166,8 +166,8 @@ class _BaseAppState extends State<BaseApp> {
 
   Future<bool> getData() async {
     if (dataExtracted == false) {
-      final String jsonString =
-          await File('./database_params.json').readAsString();
+      final String jsonString = await DefaultAssetBundle.of(context)
+          .loadString("assets/database_params.json");
       final params = json.decode(jsonString);
       var connection = PostgreSQLConnection(
           params['host'], params['port'], params['databaseName'],
@@ -213,7 +213,7 @@ class _BaseAppState extends State<BaseApp> {
   List<Widget> _getChildren(data) {
     int i = 0;
     List<Widget> children = [];
-    while (i < data.length) {
+    while (i < ((data.length > 8) ? 8 : data.length)) {
       if (i == current) {
         String copyText = ' (Click to copy)';
         children.add(Container(
