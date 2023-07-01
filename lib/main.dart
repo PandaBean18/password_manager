@@ -3,6 +3,10 @@ import 'package:flutter/services.dart';
 import '../home.dart';
 import 'package:postgres/postgres.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:pbkdf2ns/pbkdf2ns.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:typed_data';
+import 'package:encrypt/encrypt.dart' as Encrypt;
 import 'dart:convert';
 import 'dart:io';
 
@@ -44,7 +48,7 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<StatefulWidget> snapshot) {
         StatefulWidget home = SignUp();
         if (snapshot.data == null) {
-          return Center(
+          return const Center(
               child: SizedBox(
             width: 60,
             height: 60,
@@ -55,7 +59,6 @@ class MyApp extends StatelessWidget {
         }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(fontFamily: 'Fragment'),
           home: home,
         );
       },
@@ -187,6 +190,7 @@ class _PasswordInputState extends State<PasswordInput> {
   late TextEditingController passwordController;
   bool obscureText = true;
   String password = '';
+  String encKey = '';
 
   @override
   void initState() {
@@ -292,10 +296,17 @@ class _PasswordInputState extends State<PasswordInput> {
                                 "password": password
                               });
                           await connection.close();
+
+                          PBKDF2NS gen = PBKDF2NS(hash: sha256);
+                          List<int> key = gen.generateKey(
+                              password, "Aqx@0&^*&r92055eW9^C", 1000, 24);
+
+                          password = '';
+                          encKey = base64.encode(key);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: ((context) => BaseApp())));
+                                  builder: ((context) => BaseApp(encKey))));
                         },
                         child: Container(
                             padding: EdgeInsets.all(10),
@@ -333,6 +344,7 @@ class _SignInState extends State<SignIn> {
   late TextEditingController passwordController;
   bool obscureText = true;
   String password = '';
+  String encKey = '';
   String hashed = '';
   String username = '';
   String error = '';
@@ -456,10 +468,16 @@ class _SignInState extends State<SignIn> {
                       InkWell(
                           onTap: () async {
                             if (await chechPW(password) as bool) {
+                              PBKDF2NS gen = PBKDF2NS(hash: sha256);
+                              List<int> key = gen.generateKey(
+                                  password, "Aqx@0&^*&r92055eW9^C", 1000, 24);
+
+                              password = '';
+                              encKey = base64.encode(key);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: ((context) => BaseApp())));
+                                      builder: ((context) => BaseApp(encKey))));
                             } else {
                               setState(() {
                                 error = 'Incorrect password';
