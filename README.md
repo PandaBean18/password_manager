@@ -28,7 +28,7 @@ A password manager built with flutter and postgres.
 
 ### Database
 
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124650415892484096/image.png" width="500">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/db_pm.webp?raw=true">
 
 # Security 
 The main app of building this application was to learn more about symmetric encryption techniques.
