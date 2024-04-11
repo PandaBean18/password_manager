@@ -7,25 +7,24 @@ A password manager built with flutter and postgres.
 
 ### Homepage
 
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124691896195878952/image.png" width="500">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/home_pm.webp?raw=true">
 
 ### Password generator
 
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124692053780074606/image.png" width="500">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/generator_pm.webp?raw=true">
 
 ### Adding a password
 
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124694179713388574/image.png" width="500">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/add_pm.webp?raw=true">
 
 ### Deletion
 
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124694759009689722/image.png" width="500">
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124694865683419217/image.png" width="500">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/delete_1_pm.webp?raw=true">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/delete_2_pm.webp?raw=true">
 
 ### Editing
 
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124694955345072318/image.png" width="500">
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124694373095985162/image.png" width="500">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/edit_pm.webp?raw=true">
 
 ### Database
 
