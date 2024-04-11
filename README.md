@@ -3,7 +3,7 @@ A password manager built with flutter and postgres.
 
 ### Sign in
 
-<img src="https://cdn.discordapp.com/attachments/844189298030673940/1124691869469790338/image.png" width="500">
+<img src="https://imgur.com/a/IjC7CfV" width="500">
 
 ### Homepage
 
