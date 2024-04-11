@@ -3,7 +3,7 @@ A password manager built with flutter and postgres.
 
 ### Sign in
 
-<img src="https://github.com/PandaBean18/password_manager/tree/main/pm/sign_in_pm.webp?raw=true">
+<img src="https://github.com/PandaBean18/password_manager/blob/main/pm/sign_in_pm.webp?raw=true">
 
 ### Homepage
 
